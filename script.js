@@ -18,6 +18,7 @@ function secondsToMinutesSeconds(seconds) {
 async function getSongs() {
     try {
         let response = await fetch("http://127.0.0.1:5500/song/");
+
         let text = await response.text();
         let div = document.createElement("div");
         div.innerHTML = text;
@@ -27,8 +28,11 @@ async function getSongs() {
         for (let index = 0; index < as.length; index++) {
             const element = as[index];
             if (element.href.endsWith(".mp3")) {
-                songs.push(decodeURIComponent(element.getAttribute("href"))); // Decodes %20 spaces
+                const fullPath = decodeURIComponent(element.getAttribute("href")); 
+                const fileName = fullPath.split("/").pop(); 
+                songs.push(fileName);
             }
+            
         }
 
         console.log("Fetched Songs:", songs);
@@ -63,7 +67,7 @@ const playMusic = (track, pause = false) => {
 
 
 async function main() {
-    let songs = await getSongs();
+    songs = await getSongs();
     playMusic(songs[0], true)
 
     let songUL = document.querySelector(".songlist ul");
@@ -147,25 +151,5 @@ async function main() {
             playMusic(songs[index + 1])
         }
     })
-
-    // previous.addEventListener("click", () => {
-    //     console.log("Previous clicked");
-    //     console.log(currentSong);
-    //     let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
-    //     console.log("index: " + index)
-    //     if ((index - 1) >= 0) {
-    //         playMusic(songs[index - 1]);
-    //     }
-    // });
-
-    // next.addEventListener("click", () => {
-    //     console.log("Next clicked");
-    //     let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
-    //     console.log("index: " + index)
-    //     if ((index + 1) < songs.length) {
-    //         playMusic(songs[index + 1]);
-    //     }
-    // });
-
 }
 main()
