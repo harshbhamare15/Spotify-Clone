@@ -28,11 +28,11 @@ async function getSongs() {
         for (let index = 0; index < as.length; index++) {
             const element = as[index];
             if (element.href.endsWith(".mp3")) {
-                const fullPath = decodeURIComponent(element.getAttribute("href")); 
-                const fileName = fullPath.split("/").pop(); 
+                const fullPath = decodeURIComponent(element.getAttribute("href"));
+                const fileName = fullPath.split("/").pop();
                 songs.push(fileName);
             }
-            
+
         }
 
         console.log("Fetched Songs:", songs);
@@ -134,22 +134,32 @@ async function main() {
         document.querySelector(".left").style.left = "-120%"
     })
 
-    previous.addEventListener("click", ()=>{
-        console.log("Previous clicked")
-        console.log(currentSong)
-        let index = songs.indexOf(currentSong.src.split("/").slice(-1) [0])
-        if((index - 1) >= 0){
-            playMusic(songs[index - 1])
+    previous.addEventListener("click", () => {
+        console.log("Previous clicked");
+
+        let currentFile = decodeURIComponent(currentSong.src.split("/").pop());
+        let index = songs.indexOf(currentFile);
+
+        if ((index - 1) >= 0) {
+            playMusic(songs[index - 1]);
         }
+    });
+
+    next.addEventListener("click", () => {
+        console.log("Next clicked");
+
+        let currentFile = decodeURIComponent(currentSong.src.split("/").pop());
+        let index = songs.indexOf(currentFile);
+
+        if ((index + 1) < songs.length) {
+            playMusic(songs[index + 1]);
+        }
+    });
+
+    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change",(e)=>{
+        console.log("Setting volume to", e.target.value, "/ 100")
+        currentSong.volume = parseInt(e.target.value)/100
     })
 
-    next.addEventListener("click", ()=>{
-        console.log("Next clicked")
-
-        let index = songs.indexOf(currentSong.src.split("/").slice(-1) [0])
-        if((index + 1) <  songs.length){
-            playMusic(songs[index + 1])
-        }
-    })
 }
 main()
